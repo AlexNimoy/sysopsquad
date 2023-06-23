@@ -328,30 +328,30 @@ API аналитики может выполнять предварительн�
 
 Поскольку у нас есть единая монолитная база данных, мы можем сэкономить некоторые усилия на дополнительной маршрутизации сообщений и репликации.
 
-### Risk Analysis
+### Анализ рисков
 
-These are the possible high risks of the transition architecture.
+Вот возможные высокие риски переходной архитектуры.
 
-#### Performance
+#### Производительность
 
-Because this is a monolithic database it can become a performance bottleneck. The same concern regarding the single API Gateway - if not scaled properly may also become a bottleneck.
+Поскольку это монолитная база данных, она может стать узким местом производительности. Такая же проблема возникает в отношении единственного шлюза API - если он не масштабируется должным образом, то может стать узким местом.
 
-#### Availability
+#### Доступность
 
-A single API Gateway may introduce a single point of failure for the whole system (see [ADR-12](ADR/ADR-12-gateways.md)).
+Единый шлюз API может стать единой точкой отказа для всей системы (см. [ADR-12](ADR/ADR-12-gateways.md)).
 
-#### Security
+#### Безопасность
 
-There is a risk that admin staff can get access to the customer credit card data. We certainly want to prevent that by extracting billing into a separate architectural quantum (see [ADR-4](ADR/ADR-4-extract-billing-quanta.md)) and isolating it in a separate network zone with strict access permissions.
+Существует риск того, что сотрудники администрации получат доступ к данным кредитных карт клиентов. Мы, конечно же, хотим предотвратить это, извлекая биллинг в отдельный архитектурный квант (см. [ADR-4](ADR/ADR-4-extract-billing-quanta.md)) и изолируя его в отдельной зоне сети с жесткими правами доступа.
 
-The same concern is regarding the customer services - we don't want to allow an attacker to get access to the reset of the system. A significant security improvement would be to migrate customer services and data in a separate quantum in isolate it in a separate network zone (see [ADR-5](ADR/ADR-5-extract-customer-quantum.md)).
+То же самое относится к услугам для клиентов - мы не хотим разрешать злоумышленнику получить доступ к остальной части системы. Значительное улучшение безопасности заключается в миграции услуг и данных для клиентов в отдельный квант и изоляции его в отдельной зоне сети (см. [ADR-5](ADR/ADR-5-extract-customer-quantum.md)).
 
-#### Other
+#### Другое
 
-Additional concerns regarding the API Gateway:
+Дополнительные проблемы, касающиеся шлюза API:
 
-- Adds coupling between the gateway and the internal service.
-- If developed by a single development team, may become a development bottleneck.
+- Увеличивает связность между шлюзом и внутренним сервисом.
+- Если разрабатывается одной командой разработчиков, может стать узким местом.
 
 ## Architecture Decision Records
 
