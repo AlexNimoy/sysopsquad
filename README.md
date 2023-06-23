@@ -22,7 +22,7 @@
   - [Контекст системы (System Context)](#контекст-системы-system-context)
   - [Контейнеры (Containers)](#контейнеры-containers)
   - [Представления процессов (Process Views)](#представления-процессов-process-views)
-  - [Deployment](#deployment)
+  - [Развертывание (Deployment)](#развертывание-deployment)
 - [Transition Architecture](#transition-architecture)
 - [Architecture Decision Records](#architecture-decision-records)
 
@@ -305,14 +305,14 @@ API аналитики может выполнять предварительн�
 
 ![UC-7: Ежемесячное выставление счетов](images/billing-sequence.jpg 'Ежемесячное выставление счет
 
-### Deployment
+### Развертывание (Deployment)
 
-The deployment diagram illustrates how the system containers are mapped to the infrastructure:
+Диаграмма развертывания показывает, как контейнеры системы отображаются на инфраструктуру:
 
-![Deployment](images/deployment.jpg 'Deployment')
-Note the colors have not special meaning, they are just to distinguish thing from one another.
+![Развертывание](images/deployment.jpg 'Развертывание')
+Обратите внимание, что цвета не имеют особого значения, они просто используются для различения элементов друг от друга.
 
-The deployment strategy here is cloud-agnostic, assuming you can use any cloud provider of your choice or stay totally on-prem. An exception is the billing stuff, which is recommended to remain on-prem anyway for security considerations.
+Стратегия развертывания здесь является облачно-независимой и предполагает, что вы можете использовать любого облачного провайдера по вашему выбору или оставаться полностью внутри предприятия. Исключение составляют элементы биллинга, которые рекомендуется все равно оставить внутри предприятия из соображений безопасности.
 
 ## Transition Architecture
 
