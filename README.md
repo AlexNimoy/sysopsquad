@@ -18,9 +18,9 @@
   - [Допущения](#допущения)
 - [Текущая архитектура](#текущая-архитектура)
 - [Целевая архитектура](#целевая-архитектура)
-  - [Use Case Model](#use-case-model)
-  - [System Context](#system-context)
-  - [Containers](#containers)
+  - [Модель использования (Use Case Model)](#модель-использования-use-case-model)
+  - [Контекст системы (System Context)](#контекст-системы-system-context)
+  - [Контейнеры (Containers)](#контейнеры-containers)
   - [Process Views](#process-views)
   - [Deployment](#deployment)
 - [Transition Architecture](#transition-architecture)
@@ -206,7 +206,7 @@ Penultimate Electronics - это крупный электронный гига�
 
 ### Модель использования (Use Case Model)
 
-На следующей диаграмме показано соответствие требований к архитектурным характеристикам к основным случаям использования на основе [требований](Requirements.md) :
+На следующей диаграмме показано соответствие требований к архитектурным характеристикам к основным случаям использования на основе [требований](Requirements.md):
 
 ![Модель использования](images/use-case-model.jpg 'Модель использования')
 
@@ -216,20 +216,20 @@ Penultimate Electronics - это крупный электронный гига�
 
 ![Контекст системы](images/system-context.jpg 'Контекст системы')
 
-### Containers
+### Контейнеры (Containers)
 
-The containers diagram that follows shows the high-level shape of the software architecture and how responsibilities are distributed across containers. It also shows the major technology choices and how the containers communicate with one another.
+Следующая диаграмма контейнеров показывает общую структуру архитектуры программного обеспечения и распределение ответственности между контейнерами. Она также показывает основные технологические выборы и способы взаимодействия между контейнерами.
 
-The architecture is build around four main domains that have been discovered during the problem analysis:
+Архитектура построена вокруг четырех основных доменов, которые были обнаружены во время анализа проблемы:
 
-- customer-facing services, such as ticket submission, customer profiles, survey submission etc;
-- expert services, such as ticket acceptance and knowledge base search;
-- administration services, such as reporting, survey analysis, ticket tracking etc;
-- billing service, which require high attention to security.
+- (customer-facing) отправка заявок, профили клиентов, отправка опросов и т. д.;
+- (expert services) принятие заявок и поиск в базе знаний;
+- (administration services) отчетность, анализ опросов, отслеживание заявок и т. д.;
+- (billing service) выставление счетов, требует особого внимания к безопасности.
 
-The architectural style used here as the bases is Service-based architecture (see [ADR-1](ADR/ADR-1-service-based.md) for details).
+Используемый здесь архитектурный стиль - это сервисно-ориентированная архитектура (см. [ADR-1](ADR/ADR-1-service-based.md) для получения подробностей).
 
-![Containers](images/containers.jpg 'Containers')
+![Контейнеры](images/containers.jpg 'Контейнеры')
 
 ### Process Views
 
