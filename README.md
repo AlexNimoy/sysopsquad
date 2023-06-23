@@ -24,7 +24,7 @@
   - [Представления процессов (Process Views)](#представления-процессов-process-views)
   - [Развертывание (Deployment)](#развертывание-deployment)
 - [Архитектура переходного периода (Transition Architecture)](#архитектура-переходного-периода-transition-architecture)
-- [Architecture Decision Records](#architecture-decision-records)
+- [Записи об архитектурных решениях](#записи-об-архитектурных-решениях)
 
 ## Добро пожаловать
 
@@ -353,19 +353,19 @@ API аналитики может выполнять предварительн�
 - Увеличивает связность между шлюзом и внутренним сервисом.
 - Если разрабатывается одной командой разработчиков, может стать узким местом.
 
-## Architecture Decision Records
+## Записи об архитектурных решениях
 
-> _Why is more important than how.  
-> Second Law of Software Architecture_
+> _Почему важнее, чем как.
+> Второй закон архитектуры программного обеспечения_
 
-- [ADR-1](ADR/ADR-1-service-based.md) Use Service-based architectural style as the basic style.
-- [ADR-2](ADR/ADR-2-event-driven-broker.md) Use message queues with guaranteed delivery for ticket workflow.
-- [ADR-3](ADR/ADR-3-search-expert.md) Extract ticket assignment into a separate batch processing job.
-- [ADR-4](ADR/ADR-4-extract-billing-quanta.md) Extract billing architectural quantum.
-- [ADR-5](ADR/ADR-5-extract-customer-quantum.md) Extract customer architectural quantum.
-- [ADR-6](ADR/ADR-6-separate-customer-db.md) Use separate customer database.
-- [ADR-7](ADR/ADR-7-separate-reporting-db.md) Separate analytics and reporting database.
-- [ADR-9](ADR/ADR-9-notification-service.md) Extract notification service.
-- [ADR-10](ADR/ADR-10-modular-services.md) Use sub-domain partitioning for service design.
-- [ADR-11](ADR/ADR-11-extract-payment-job.md) Extract payment processing into a separate component (Payment Job).
-- [ADR-12](ADR/ADR-12-gateways.md) Offload operational concerns into API Gateways.
+- [ADR-1](ADR/ADR-1-service-based.md) Использовать архитектурный стиль на основе сервисов (Service-based) в качестве основного стиля.
+- [ADR-2](ADR/ADR-2-event-driven-broker.md) Использовать очереди сообщений с гарантированной доставкой для рабочего процесса с тикетами.
+- [ADR-3](ADR/ADR-3-search-expert.md) Извлечь назначение тикетов в отдельную пакетную задачу.
+- [ADR-4](ADR/ADR-4-extract-billing-quanta.md) Извлечь биллинг в отдельный архитектурный квант.
+- [ADR-5](ADR/ADR-5-extract-customer-quantum.md) Извлечь архитектурный квант для клиентов.
+- [ADR-6](ADR/ADR-6-separate-customer-db.md) Использовать отдельную базу данных для клиентов.
+- [ADR-7](ADR/ADR-7-separate-reporting-db.md) Отделить аналитику и отчетную базу данных.
+- [ADR-9](ADR/ADR-9-notification-service.md) Извлечь сервис уведомлений.
+- [ADR-10](ADR/ADR-10-modular-services.md) Использовать разделение поддоменов для проектирования сервисов.
+- [ADR-11](ADR/ADR-11-extract-payment-job.md) Извлечь обработку платежей в отдельный компонент (задача по обработке платежей).
+- [ADR-12](ADR/ADR-12-gateways.md) Перенести операционные задачи на API Gateways.
