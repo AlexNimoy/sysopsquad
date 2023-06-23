@@ -21,7 +21,7 @@
   - [Модель использования (Use Case Model)](#модель-использования-use-case-model)
   - [Контекст системы (System Context)](#контекст-системы-system-context)
   - [Контейнеры (Containers)](#контейнеры-containers)
-  - [Process Views](#process-views)
+  - [Представления процессов (Process Views)](#представления-процессов-process-views)
   - [Deployment](#deployment)
 - [Transition Architecture](#transition-architecture)
 - [Architecture Decision Records](#architecture-decision-records)
@@ -231,80 +231,79 @@ Penultimate Electronics - это крупный электронный гига�
 
 ![Контейнеры](images/containers.jpg 'Контейнеры')
 
-### Process Views
+### Представления процессов (Process Views)
 
-This section explains some key use cases to demonstrate how corresponding workflows pass through containers.
+В данном разделе объясняются некоторые ключевые случаи использования для демонстрации того, как соответствующие рабочие процессы проходят через контейнеры.
 
-#### UC-2: Customer registration
+#### UC-2: Регистрация клиента
 
-The following sequence diagram highlights some key requests that the customer performs during registration in the system.
-One worth paying attention is registration of a credit card. In the customer database we store only some minimal credit card data to let the customer possibility identify which card do they have already registered. All the details of the credit card are encrypted and securely passed to the billing system (see [ADR-4](ADR/ADR-4-extract-billing-quanta.md)).
+Следующая диаграмма последовательности подчеркивает некоторые ключевые запросы, которые клиент выполняет во время регистрации в системе. Особое внимание следует уделить регистрации кредитной карты. В базе данных клиентов мы храним только минимальные данные кредитной карты, чтобы клиент мог определить, какая карта уже зарегистрирована. Все данные о кредитной карте зашифрованы и безопасно передаются в систему биллинга (см. [ADR-4](ADR/ADR-4-extract-billing-quanta.md)).
 
-![UC-2: Customer registration](images/customer-registration.jpg 'Customer Registration')
+![UC-2: Регистрация клиента](images/customer-registration.jpg 'Регистрация клиента')
 
-#### UC-3: Ticket submission
+#### UC-3: Подача заявки на техническую поддержку
 
-The following diagram illustrates the process of a ticket registration by the customer.
+Следующая диаграмма иллюстрирует процесс регистрации заявки на техническую поддержку клиентом.
 
-![UC-3: Ticket submission](images/ticket-submission.jpg 'Ticket Submission')
+![UC-3: Подача заявки](images/ticket-submission.jpg 'Подача заявки')
 
-Important thing to note is that the requests succeeds after the ticket is saved in the customer database and the corresponding event is fired for the ticket processing area. This way the customer will be able to see the new ticket immediately after the page refresh and will not have to wait on any further actions on the ticket.
+Важно отметить, что запрос успешно выполняется после сохранения заявки в базе данных клиента и генерации соответствующего события для области обработки заявок. Таким образом, клиент сможет видеть новую заявку сразу после обновления страницы и не будет ждать дополнительных действий по заявке.
 
-#### UC-3: Ticket assignment
+#### UC-3: Назначение заявки
 
-The diagram below explains how the system processes a new ticket and assigns it an expert.
+Диаграмма ниже объясняет, как система обрабатывает новую заявку и назначает на нее эксперта.
 
-![UC-3: Ticket Created](images/ticket-assignment.jpg)
+![UC-3: Заявка создана](images/ticket-assignment.jpg)
 
-Since Ticket Process is a job that runs periodically, tickets that cannot be assigned at the given moment will never be lost, they we bill processed next time the job will run.
+Поскольку обработка заявок - это задание, которое выполняется периодически, заявки, которые в данный момент не могут быть назначены, никогда не будут потеряны и будут обработаны при следующем запуске задания.
 
-Also, notice that an assignment is a separate entity. This way we can store a history of assignments.
+Также обратите внимание, что назначение является отдельной сущностью. Таким образом, мы можем хранить историю назначений.
 
-#### UC-3: Ticket acceptance
+#### UC-3: Принятие заявки
 
-This diagram continues the ticket workflow and shows how the Ticket Assigned event is processed by the Sysops Expert user.
+Эта диаграмма продолжает рабочий процесс заявки и показывает, как обрабатывается событие "Заявка назначена" пользователем Sysops Expert.
 
-![UC-3: Ticket Assigned](images/ticket-acceptance.jpg)
+![UC-3: Заявка назначена](images/ticket-acceptance.jpg)
 
-The experts operation succeeds as soon as the ticket status is saved in the database. And in case of acceptance the corresponding even is fired to the customer area.
+Операция эксперта выполняется сразу после сохранения статуса заявки в базе данных. И в случае принятия заявки генерируется соответствующее событие для области клиента.
 
-#### UC-3: Ticket in-progress
+#### UC-3: Заявка в процессе выполнения
 
-This diagram demonstrates how the customer is notified when the Sysops Expert accepted the ticket.
+Эта диаграмма демонстрирует, как клиент уведомляется о том, что заявку принял Sysops Expert.
 
-![UC-3: Ticket In-Progress](images/ticket-inprogress.jpg)
+![UC-3: Заявка в процессе выполнения](images/ticket-inprogress.jpg)
 
-Important to notice that the ticket is saved in the customer database prior to the notification event so that the customer will see the actual ticket status upon the notification receive.
+Важно отметить, что заявка сохраняется в базе данных клиента перед событием уведомления, чтобы клиент увидел фактический статус заявки после получения уведомления.
 
-#### UC-3: Ticket completion
+#### UC-3: Завершение заявки
 
-This diagram explains the process when the Sysops Expert solved the problem and marks the ticket as completed.
+Эта диаграмма объясняет процесс, когда Sysops Expert решает проблему и помечает заявку как завершенную.
 
-![UC-3: Ticket Completed](images/ticket-completion.jpg)
+![UC-3: Завершение заявки](images/ticket-completion.jpg)
 
-#### UC-3: Ticket Resolved
+#### UC-3: Заявка решена
 
-This diagram illustrates how the customer receives a notification about the ticket resolution and link to the survey form.
+Эта диаграмма иллюстрирует, как клиент получает уведомление о разрешении заявки и ссылку на форму опроса.
 
-![UC-3: Ticket Resolved](images/ticket-resolved.jpg)
+![UC-3: Заявка решена](images/ticket-resolved.jpg)
 
-First, the ticket status has to be updated in the customer database, so that upon receiving any notifications the customer will see the actual ticket status on the Customer Portal.
+Сначала статус заявки должен быть обновлен в базе данных клиента, чтобы клиент увидел фактический статус заявки на портале клиента при получении уведомления.
 
-#### UC-4: Survey Submission
+#### UC-4: Отправка опроса
 
-And finally the last step in the ticket resolution flow is survey submission by the customer.
+И, наконец, последний шаг в потоке разрешения заявки - отправка опроса клиентом.
 
-![UC-4: Survey Submission](images/survey-submission.jpg)
+![UC-4: Отправка опроса](images/survey-submission.jpg)
 
-From the customer perspective this is a fire-and-forget even so the operation succeeds as soon as the "Submit" button is clicked.
+С точки зрения клиента, это событие "записать и забыть", поэтому операция выполняется сразу после нажатия кнопки "Отправить".
 
-Analytics API can perform some preliminary processing of the survey if necessary or simply store it in the database for the reporting.
+API аналитики может выполнять предварительную обработку опроса при необходимости или просто хранить его в базе данных для отчетности.
 
-#### UC-7: Monthly billing
+#### UC-7: Ежемесячное выставление счетов
 
-The diagram illustrates the monthly billing workflow.
+Диаграмма иллюстрирует процесс ежемесячного выставления счетов.
 
-![UC-7: Monthly billing](images/billing-sequence.jpg 'Monthly Billing')
+![UC-7: Ежемесячное выставление счетов](images/billing-sequence.jpg 'Ежемесячное выставление счет
 
 ### Deployment
 
