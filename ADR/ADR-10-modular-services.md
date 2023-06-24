@@ -1,15 +1,17 @@
-## Title: 
-ADR-10: Use sub-domain partitioning for service design
+# ADR-10: Использование разделения поддоменов для проектирования сервисов
 
-## Status: 
-Proposed
+## Статус
 
-## Context: 
-The company has concerns regarding the system modularity because each change requires a lot of unrelated stuff to be changed too.
+Предложено
 
-## Decision: 
-By designing service as a modular monolith around sub-domain rather than technical layers we can improve modularity and minimize unnecessary changes
+## Контекст
 
-## Consequences: 
+Компания обеспокоена модульностью системы, так как каждое изменение требует также изменения множества несвязанных компонентов.
 
-This may require corresponding database partitioning.
+## Решение
+
+Путем проектирования сервисов как модульного монолита вокруг поддоменов вместо технических слоев, мы можем улучшить модульность и минимизировать ненужные изменения.
+
+## Последствия
+
+Это может потребовать соответствующего разделения базы данных.
