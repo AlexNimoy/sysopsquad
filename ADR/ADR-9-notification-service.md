@@ -1,17 +1,19 @@
-## Title: 
-ADR-9: Extract notification service
+# ADR-9: Извлечение сервиса уведомлений
 
-## Status: 
-Proposed
+## Статус
 
-## Context: 
-Provide customer and expert notification capability to all domain areas.
+Предложено
 
-## Decision: 
-The service does not belong to any specific domain and is used by all domain services.
+## Контекст
 
-If notifications arrive a bit late to the destination due to maintenance or failure, this is not critical to the business operations, thus it does not require any specific considerations towards availability and performance.
+Обеспечить возможность уведомления клиентов и экспертов для всех областей домена.
 
-## Consequences: 
+## Решение
 
-Alternative would be having a separate notification service for each domain, but this will require to duplicate implementation in several places what will negatively impact on maintainability.
+Сервис не относится к какой-либо конкретной области домена и используется всеми сервисами домена.
+
+Если уведомления приходят с небольшой задержкой в место назначения из-за технического обслуживания или сбоя, это не критично для бизнес-операций, поэтому не требуется особых учетов доступности и производительности.
+
+## Последствия
+
+Альтернативой было бы иметь отдельный сервис уведомлений для каждой области домена, но это потребовало бы дублирования реализации в нескольких местах, что негативно скажется на поддерживаемости.
