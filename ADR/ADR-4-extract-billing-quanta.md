@@ -1,31 +1,34 @@
-## Title: 
-ADR-4: Extract billing architectural quantum
+# ADR-4: Извлечение биллингового архитектурного кванта
 
-## Status: 
-**Proposed**
+## Статус
 
-## Context: 
-Billing architectural quantum has very specific security requirements, significantly differentiating it from the rest of the system. Since we store the customer's credit card information in the database (see ASM-4), the system may need to pass a Payment Card Industry (PCI) audit. The bigger part of the system deals with credit card data, the more onerous the procedure is.  
-It make sense to isolate the whole billing processing into a separate architectural quantum (as already mentioned in [ADR-1](ADR/ADR-1-service-based.md). Now let's decide how do we do that.
+Предложенный
 
-## Decision: 
-The problem with isolation the billing sub-system is that billing data is needed by other parts of the system:
-* customers want to enter and edit their billing information, including the credit card data;
-* administrators need to access the billing system to handle payment processing issues;
-* managers want to see the financial reports.
+## Контекст
 
-First, let's outline what we include into the billing architectural quantum.
+Биллинговый архитектурный квант имеет особые требования к безопасности, существенно отличающиеся от остальной системы. Поскольку мы храним информацию о кредитных картах клиентов в базе данных (см. ASM-4), система может потребоваться пройти аудит от Payment Card Industry (PCI). Чем больше часть системы работает с данными кредитных карт, тем более трудоемкой становится процедура.  
+Изолировать всю процедуру биллинга в отдельный архитектурный квант имеет смысл (как уже упоминалось в [ADR-1](ADR/ADR-1-service-based.md)). Теперь давайте решим, как мы это сделаем.
 
-Let's solve these issues one by one. Do customers need to see all their billing details to edit them, like card number, card expiration date, or CVC2? Of course no. It is enough to display the last 4 digits of the credit card number, for example, so that customer will have to remove an existing one and add a new one with all the details. 
-When a customer enters a credit card data in the Customer UI, we immediately pass it to the billing quantum and store only the last 4 digits of the credit card number in the customer quantum, leaving all the details secure in the billing quantum. The customer does not have to wait until the credit card is processed by the billing system so we can pass it asynchronously through the message queue thus improve response time.
+## Решение
 
-Administrators will access the billing information via billing UI. As an additional security measure, billing quantum can be hidden behind a virtual network from the rest of the world, then administrators will have to use a VPN client to get access to it.
+Проблема с изоляцией подсистемы биллинга заключается в том, что данные биллинга требуются другим частям системы:
 
-For managers, we have two options to consider. They can also access the billing UI to analyze the financial reports the same way as administrators do. Or, in case we stick with a separate quantum for reporting and analytics, billing data, that is required for reporting, can be replicated to that quantum on a table basis. In case we want different database vendors for each of these quanta, instead, it can be a background ETL job running in the billing quantum and push reporting data to the other side.
+- клиенты хотят вводить и редактировать информацию о своем платеже, включая данные кредитной карты;
+- администраторы должны иметь доступ к системе биллинга для решения вопросов обработки платежей;
+- менеджеры хотят видеть финансовые отчеты.
 
-![Billing Quantum](../images/adr-4.jpg)
-  
-## Consequences: 
+Сначала определим, что включаем в биллинговый архитектурный квант.
 
-* Adds complexity.
-* We need to ensure that passing of credit card data between quanta is secure. Message brokers typically support TLS, access control and authentication, though require additional development efforts.
+Давайте решим эти проблемы поочередно. Нужно ли клиентам видеть все детали своего платежа для их редактирования, такие как номер карты, срок действия или CVC2-код? Конечно, нет. Достаточно отображать последние 4 цифры номера кредитной карты, например, чтобы клиент мог удалить существующую карту и добавить новую с полной информацией.
+Когда клиент вводит данные кредитной карты в пользовательском интерфейсе, мы сразу передаем их в биллинговый квант и сохраняем только последние 4 цифры номера кредитной карты в пользовательском кванте, оставляя все детали в безопасности в биллинговом кванте. Клиенту не нужно ждать обработки кредитной карты биллинговой системой, поэтому мы можем передавать данные асинхронно через очередь сообщений, тем самым улучшая время отклика.
+
+Администраторы получат доступ к информации о биллинге через интерфейс биллинга. Как дополнительная мера безопасности, биллинговый квант может быть скрыт от остального мира за виртуальной сетью, и администраторы будут должны использовать VPN-клиент для доступа к нему.
+
+Для менеджеров у нас есть два варианта. Они также могут получить доступ к интерфейсу биллинга для анализа финансовых отчетов так же, как администраторы. Или, если мы придерживаемся отдельного кванта для отчетности и аналитики, данные биллинга, необходимые для отчетности, могут быть реплицированы в этот квант на уровне таблиц. В случае, если мы хотим использовать разные базы данных для каждого из этих квантов, вместо этого можно использовать фоновую задачу ETL, работающую в биллинговом кванте, и передавать данные отчетности на другую сторону.
+
+![Биллинговый квант](../images/adr-4.jpg)
+
+## Последствия
+
+- Усложнение.
+- Необходимо обеспечить безопасность передачи данных кредитных карт между квантами. Брокеры сообщений обычно поддерживают протоколы TLS, контроль доступа и аутентификацию, но это требует дополнительных усилий при разработке.
