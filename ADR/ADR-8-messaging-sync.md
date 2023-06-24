@@ -1,15 +1,17 @@
-## Title: 
-ADR-8: Use table-based synchronization of customer billing info
+# ADR-8: Использование синхронизации данных путем таблицы для информации о выставлении счетов клиентов
 
-## Status: 
-**OBSOLETE**
+## Статус
 
-## Context: 
-Since we use a separate database for customer data ([ADR-6](ADR-6-separate-customer-db.md) we need to keep this data in sync with administration database where the billing stuff is running.
+**УСТАРЕЛ**
 
-## Decision: 
-Changing of the customer billing information is not an event that needs immediate reaction. This data will be used monthly by the payment service when it is time, so it is fine if this data will be silently replicated to the billing store.
+## Контекст
 
-## Consequences: 
+Поскольку мы используем отдельную базу данных для данных клиентов ([ADR-6](ADR/ADR-6-separate-customer-db.md)), нам необходимо поддерживать синхронизацию этих данных с базой данных администрации, где работает система выставления счетов.
 
-Depending on the database vendor this can be implemented in a variety of ways. Some databases support table-based replication. In other cases it can be an ETL job that runs periodically.
+## Решение
+
+Изменение информации о выставлении счетов клиентов не является событием, требующим немедленной реакции. Эти данные будут использоваться ежемесячно службой оплаты в назначенное время, поэтому это нормально, если эти данные будут молча реплицироваться в хранилище для выставления счетов.
+
+## Последствия
+
+В зависимости от вендора базы данных это можно реализовать различными способами. Некоторые базы данных поддерживают синхронизацию данных путем таблицы. В других случаях это может быть задача ETL, выполняющаяся периодически.
