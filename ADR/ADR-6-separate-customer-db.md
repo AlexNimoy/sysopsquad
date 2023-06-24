@@ -1,17 +1,19 @@
-## Title: 
-ADR-6: Use separate customer database
+# ADR-6: Использование отдельной базы данных клиента
 
-## Status: 
-Proposed
+## Статус
 
-## Context: 
-Improve performance, availability and scalability of customer-facing services.
+Предложенный
 
-## Decision: 
-By storing customer data separately from the operational data we ensure that maintenance of the operational database will not affect the customer-facing service. Additional, decoupling customer data from the rest of the system improves extensibility. Also customers don't need to access all the information stored in the operational database so we can filter out unnecessary data.
+## Контекст
 
-This also enable security improvements since we can place customer-facing services into a separate network zone.
+Улучшение производительности, доступности и масштабируемости сервисов, предоставляемых клиентам.
 
-## Consequences: 
+## Решение
 
-We need to keep in sync customer billing information (address, credit cards etc) between customer database and the rest of the system.
+Путем хранения данных клиентов отдельно от операционных данных мы обеспечиваем то, что обслуживание операционной базы данных не будет влиять на сервис, предоставляемый клиентам. Кроме того, отделение данных клиентов от остальной системы улучшает расширяемость. Кроме того, клиентам не нужно получать доступ ко всей информации, хранящейся в операционной базе данных, поэтому мы можем отфильтровать ненужные данные.
+
+Это также позволяет улучшить безопасность, поскольку мы можем разместить сервисы, предоставляемые клиентам, в отдельной сетевой зоне.
+
+## Последствия
+
+Нам необходимо поддерживать синхронизацию информации о клиентах (адрес, кредитные карты и т. д.) между базой данных клиента и остальной частью системы.
