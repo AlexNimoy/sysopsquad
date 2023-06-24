@@ -1,26 +1,29 @@
-## Title: 
-ADR-1: Use Service-based architectural style as the basic style
+# ADR-1: Использование сервисно-ориентированного архитектурного стиля в качестве основного стиля
 
-## Status: 
-Proposed
+## Статус
 
-## Context: 
-While being a small business the company might have been happy with the monolithic application. But when the business has grown up to the country scale the company now needs a distributed solution to stay in business.
+Предложено
 
-## Decision: 
-We discovered four main domain areas here each having a separate group of architectural characteristics:
+## Контекст
 
- - Customer-facing services, such as ticket submission and profile management. These require high availability and performance because nothing makes customers so unhappy as a slow or even unavailable system. This part of the system will also have to be scalable because growing the number of customers is the whole key of any business like this. In addition, customer area may be isolated in a separate network zone where only incoming requests are allowed thus improving security.
- - Operational processes, such as knowledge base and ticket workflow. If an expert is unable to search a ticket or knowledge base article when arrived to the customer residence, they might be unable to fix the problem. What can be worse? This subsystem requires a high availability and performance too.
- - Billing services. This is about the customers money. If an attacker will get access to the credit card information it will be a disaster and may have legal implications. This part of the system may need to pass PCI certification, so isolating it from the rest of the system will simplify this procedure a lot. This is an isolated security zone with no incoming requests from the other domains.
- - Administration services, such as user management, analytics and reporting. These people do a very important work but nothing critical will happen if a report generation will take a little longer, or if an administrator will update an expert profile few hour later due to maintenance or something. Security is still important here because admin credentials cannot be exposed, but this is different story from billing security level.
+Когда компания была небольшим бизнесом, она могла быть удовлетворена монолитным приложением. Однако, по мере роста бизнеса до масштабов страны, компании теперь необходимо распределенное решение, чтобы оставаться на рынке.
 
-This makes us to think about separate architectural quantum for each of these four domain and Service-based approach seems to be a good shot here. While providing good fault-tolerance, scalability, and agility possibilities it free from cost overhead of Microservices approach.
+## Решение
+
+Мы обнаружили четыре основных области доменов, каждая из которых имеет свои собственные группы архитектурных характеристик:
+
+- **Customer-facing** Сервисы, предоставляемые непосредственно клиентам, такие как подача заявок на техническую поддержку и управление профилями. Важно обеспечить высокую доступность и производительность для этой части системы, так как медленная или недоступная система может серьезно разочаровать клиентов. Кроме того, эта часть системы должна быть масштабируемой, так как увеличение числа клиентов является ключевым фактором успешного бизнеса. Клиентская зона может быть изолирована в отдельной сетевой зоне, где разрешены только входящие запросы, что повышает уровень безопасности.
+- **Operational processes** Операционные процессы, такие как работа с базой знаний и обработка заявок. Если эксперт не сможет найти заявку или статью в базе знаний, когда прибудет к месту клиента, он может быть не в состоянии решить проблему. Эта подсистема также требует высокой доступности и производительности.
+- **Billing services** Сервисы по выставлению счетов. Здесь речь идет о деньгах клиентов. Если злоумышленник получит доступ к информации о кредитных картах, это может стать катастрофой и иметь юридические последствия. Эта часть системы может потребовать сертификации PCI, поэтому ее изоляция от остальной системы значительно упростит эту процедуру. Это изолированная зона безопасности, не принимающая входящие запросы из других доменов.
+- **Administration services** Службы администрирования, такие как управление пользователями, аналитика и отчетность. Эти сотрудники выполняют очень важную работу, но ничего критического не произойдет, если генерация отчета займет немного больше времени или администратор обновит профиль эксперта с задержкой из-за технических работ. Здесь также важна безопасность, поскольку учетные данные администратора не должны быть подвержены риску, однако уровень безопасности отличается от требуемого для системы выставления счетов.
+
+Это заставляет нас задуматься о создании отдельной архитектурной кванта для каждого из этих четырех доменов, и сервисно-ориентированный подход кажется хорошим решением. Предлагаемый подход обладает надежностью, масштабируемостью и гибкостью, несопровождаемыми дополнительными затратами, характерными для подхода на микросервисы.
 
 ![Service-based](../images/adr-1.jpg)
 
-The other important thing worth mentioning here is that the Service-based style is a good starting point in evolutionary migration from a monolith to a highly distributed architecture, such as Microservices if a new scalability level will become necessary.
+Другой важный момент, который стоит упомянуть, заключается в том, что стиль, основанный на сервисах, является хорошей отправной точкой для постепенной миграции от монолитной архитектуры к высокораспределенной архитектуре, такой как микросервисы, если потребуется новый уровень масштабируемости.
 
-## Consequences: 
- - This may require splitting the database.
- - Will need to provide training for the product teams on domains boundaries and responsibilities.
+## Последствия
+
+- Это может потребовать разделения базы данных.
+- Потребуется обучение команд продукта о границах и обязанностях доменов.
