@@ -1,25 +1,28 @@
-## Title: 
-ADR-3: Extract ticket assignment into a separate batch processing job.
+# ADR-3: Извлечение назначения заявки в отдельную пакетную задачу
 
-## Status: 
-Proposed
+## Статус
 
-## Context: 
-The ticket assignment part seems to be a problematic one. Often times the wrong expert shows up to fix something they know nothing about. Sometimes, tickets never get assigned to an expert and lost forever. We need to come up with a robust solution to this problem.
+Предложенный
 
-## Decision: 
+## Контекст
 
-Since ticket assignment is a subject to frequent changes, it seems a good idea to make it a separate component thus improve modularity. 
+Назначение заявки кажется проблематичным. Часто неправильный эксперт приходит, чтобы исправить что-то, о чем он ничего не знает. Иногда заявки не назначаются эксперту и навсегда теряются. Нам необходимо найти надежное решение этой проблемы.
 
-One option is to make it a standalone service that reacts to ticket events and processes each new ticket separately. But this will imply significant limitations on the processing capabilities. What about ticket priorities? Tickets with a higher priority may need to be assigned first postponing lower priority tickets. This can barely be achieved when processing one ticket at a time.
+## Решение
 
-A better solution to this is making it a batch processing job that runs periodically (hourly for example, or even once a day). Whenever a customer submits a ticket, they don't expect that an expert be waiting behind the door in a next minute. Even urgent situations can way hours, less urgent days. Robustness is over performance here.
+Поскольку назначение заявки подвержено частым изменениям, кажется хорошей идеей сделать его отдельным компонентом и тем самым улучшить модульность.
 
-Making it a batch job will also make the component much simpler to test and develop ridding of the servicing burden, like maintaining an API.
+Один из вариантов - сделать его самостоятельным сервисом, который реагирует на события заявки и обрабатывает каждую новую заявку отдельно. Но это будет означать значительные ограничения в возможностях обработки.
+Как насчет приоритетов заявки? Заявки с более высоким приоритетом могут требовать первоочередного назначения, откладывая более низкоприоритетные заявки. Это едва ли возможно, когда обрабатывается по заявке за раз.
 
-The job will simply start on schedule (as a cron job for example), scan for ticket statuses and create ticket assignments. It will not accept any incoming requests or events, so it's only responsibility is assigning experts to tickets.
+Более лучшим решением будет сделать это пакетной задачей, которая запускается периодически (например, каждый час или даже один раз в день). Когда клиент отправляет заявку, он не ожидает, что эксперт будет ждать за дверью через минуту. **Даже срочные ситуации могут ждать несколько часов, менее срочные - дни.** Здесь важнее **надежность**, чем производительность.
 
-It will also improve robustness, because no problem to re-run the job in case of a problem.
+Сделав это пакетной задачей, мы также сделаем компонент намного проще для тестирования и разработки, избавившись от необходимости поддерживать API.
 
-## Consequences: 
-There is a risk that the job will not start due to a configuration issue or a bug, thus it will require additional monitoring.
+Задача просто запускается по расписанию (как например cron-job), сканирует статусы заявок и создает назначения заявок. Она не принимает входящие запросы или события, поэтому ее единственная ответственность - назначать экспертов на заявки.
+
+Это также повысит надежность, потому что проблема может быть решена повторным запуском задачи в случае неудачи.
+
+## Последствия
+
+Существует риск того, что задача не запустится из-за проблемы с конфигурацией или ошибки, поэтому потребуется дополнительный мониторинг.
