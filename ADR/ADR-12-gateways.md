@@ -1,25 +1,28 @@
-## Title: 
-ADR-12: Offload operational concerns into API Gateways.
+# ADR-12: Выгрузка операционных задач в API-шлюзы.
 
-## Status: 
-Proposed
+## Статус
 
-## Context: 
-At this point, we extracted 8 services. Now the question is - how do we handle authentication and authorization? How do we ensure that front-ends access only services they are permitted to? What about logging? Should we implement these things inside each service thus take a burden of code duplication? Or we can offload domain services from this operational stuff?
+Предложено
 
-## Decision: 
-API Gateways may come at hand here. It seems a good idea to have separate API Gateways for each domain quanta for the same reason we explain in [ADR-1](ADR/ADR-1-service-based.md) - they may require different architectural characteristics.
+## Контекст
 
-So what gateways do we need here? The first candidate is the billing silo, since this is the highest security risk and may to be isolated from the rest of the system as much as possible. The least thing we want that either admin staff or customer users gain access to somebody credit card data.  
-Admin API operates with admin permissions so any intrusion here will make a high impact on the whole business.  
-Customer API and Sysops API need different levels of availability and scalability here so this is another Gateway. And Mobile application may need more efficient data responses than web applications.
+На данный момент мы извлекли 8 сервисов. Теперь встает вопрос - как обрабатывать аутентификацию и авторизацию? Как гарантировать, что фронтенды получают доступ только к разрешенным им сервисам? Что насчет журналирования? Следует ли реализовывать эти вещи в каждом сервисе и, таким образом, создавать дублирование кода? Или мы можем выгрузить доменные сервисы от этого операционного функционала?
 
-An important thing to notice that API Gateways should contain no domain logic. Remember, we are not building an ESB here. API Gateways should care exceptionally about access control, security checks,and simple message routing based the message type. We leave requests from gateways to the corresponding domains services synchronous making gateways simple pass-through interfaces, because if a customer changes something in the profile and refreshes the page, the change should be immediately reflected.
+## Решение
 
-Another important notice is that services in different domains should communicate only through the API Gateways, while services inside the same quantum may communicate directly. This is applicable to both synchronous and asynchronous communication via a message queue (see [ADR-2](ADR/ADR-2-event-dreven-broker.md). For example, Ticket Processor is in essence an implementation detail of Ticket API thus can communicate to each other directly. If this communication method will change between these two, the Sysops API Gateway will not have to worry about that. On the other side, Customer API sends tickets to the Ticket API only through Sysops API Gateway. This way, an API Gateway also plays a role of a facade to other quanta.
+Здесь могут пригодиться API-шлюзы. Похоже, что имеет смысл иметь отдельные API-шлюзы для каждого доменного кванта по той же причине, которую мы объясняем в [ADR-1](ADR/ADR-1-service-based.md) - они могут требовать различные архитектурные особенности.
 
-There is a variety of choices on the market for a gateway implementation, open-source, proprietary and cloud-hosted.
+Какие шлюзы нам нужны? Первым кандидатом является биллинговый квант, поскольку это самый высокий уровень риска безопасности и его следует изолировать от остальной системы насколько это возможно. Мы не хотим, чтобы сотрудники администрации или клиенты получали доступ к данным чьей-либо кредитной карты.
+Административный API работает с административными разрешениями, поэтому любое вторжение здесь будет иметь серьезные последствия для всего бизнеса.
+API для клиентов и API для системных операторов требуют разных уровней доступности и масштабируемости, поэтому это еще один шлюз. А мобильное приложение может потребовать более эффективных ответов на данные, чем веб-приложения.
 
-## Consequences: 
-Again, this adds complexity, because the number of services increases. We should pay careful attention while developing API Gateways to avoid performance bottlenecks and a single point of failure, so they need to be properly load-balanced.
-API Gateways also require additional development cost and future maintenance.
+Важно отметить, что API-шлюзы не должны содержать доменной логики. Помните, мы не создаем ESB (Enterprise Service Bus) здесь. API-шлюзы должны заботиться исключительно о контроле доступа, проверках безопасности и простой маршрутизации сообщений на основе их типа. Мы оставляем запросы от шлюзов к соответствующим доменным сервисам синхронными, чтобы шлюзы были простыми прокси-интерфейсами. Ведь если клиент что-то изменит в своем профиле и обновит страницу, изменения должны мгновенно отображаться.
+
+Еще одно важное замечание заключается в том, что сервисы в разных доменах должны общаться только через API-шлюзы, в то время как сервисы внутри одного кванта могут общаться напрямую. Это относится как к синхронному, так и к асинхронному обмену сообщениями через очередь сообщений (см. [ADR-2](ADR/ADR-2-event-driven-broker.md)). Например, обработчик заявок (Ticket Processor) в основном является деталью реализации API для заявок (Ticket API), поэтому они могут общаться напрямую. Если этот способ коммуникации изменится между этими двумя сервисами, API-шлюз для системных операторов (Sysops API Gateway) не будет заботиться об этом. С другой стороны, API для клиентов (Customer API) отправляет заявки на обработку только через API-шлюз для системных операторов. Таким образом, API-шлюз также выполняет роль _фасада_ для других квантов.
+
+На рынке существует множество вариантов для реализации шлюзов - открытые исходные коды, проприетарные и облачные.
+
+## Последствия
+
+Снова возрастает сложность из-за увеличения числа сервисов. Необходимо тщательно следить за разработкой API-шлюзов, чтобы избежать узких мест в производительности и единой точки отказа, поэтому они должны быть правильно балансированы по нагрузке.
+API-шлюзы также требуют дополнительных затрат на разработку и последующую поддержку.
