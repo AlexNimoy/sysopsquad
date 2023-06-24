@@ -1,29 +1,34 @@
-## Title: 
-ADR-2: Use message queues with guaranteed delivery for ticket workflow
+# ADR-2: Использование очередей сообщений с гарантированной доставкой для рабочего процесса по обработке заявок
 
-## Status: 
-Proposed
+## Статус
 
-## Context: 
-As mentioned in [ADR-1](ADR-1-service-based.md), customer-facing services will require special considerations on availability and scalability with respect to the rest of the system. Similar requirements toward the expert-facing software, they need their sub-system to be highly available and provide a better response time than the rest of the system.
-This makes an implication for decoupling these areas from one another.
+Предложено
 
-## Decision: 
-Using an asynchronous message queues between customer and Sysops services enables the following:
- - enables fire and forget ticket submission for the customer, so that customer does not have to wait for any ticket processing; hence we get very low response time;
- - same for Sysops Experts, they don't have to wait until the system finishes with ticket processing or report generation; while working on the field they just need to search for a ticket or a kb article;
- - enables independent scalability and availability of the corresponding quanta;
+## Контекст
 
-If look at the ticket workflow between domains, it looks naturally pretty much as messaging rather than query-response behavior as illustrated in this BPMN diagram (circles are messages):
+Как указано в [ADR-1](ADR-1-service-based.md), службы, предоставляемые для клиентов, требуют особых мер по обеспечению доступности и масштабируемости в отношении остальной системы. Аналогичные требования к программному обеспечению, предназначенному для специалистов, заключаются в необходимости обеспечения высокой доступности подсистемы и более быстрого времени отклика по сравнению с остальной системой.
+Это предполагает необходимость декуплирования этих областей друг от друга.
 
-![Ticket workflow](../images/bpmn-ticket-workflow.jpg "Ticket workflow")
+## Решение
 
-Note that we should guarantee message delivery to the exact destination so this peer-to-peer queue-based messaging, not a topic-based publisher-subscriber communication.
+Использование асинхронных очередей сообщений между службами для клиентов и службами Sysops обеспечивает следующие возможности:
 
-## Consequences: 
-Let's consider the trade-offs:
- - added complexity;
- - message queues can introduce a single point of failure so has to be load-balanced;
- - ticket workflow becomes more difficult for testing and debugging.
+- позволяет клиентам отправлять заявки и не ждать их обработки; таким образом, достигается очень низкое время отклика;
+- аналогично для экспертов Sysops, им не нужно ждать окончания обработки заявки или генерации отчета; работая в поле, им просто нужно искать заявку или статью в базе знаний;
+- обеспечивает независимую масштабируемость и доступность соответствующих квантов.
 
-Since aforementioned qualities are critical to the business we accept these trade-offs.
+Если посмотреть на рабочий процесс по обработке заявок между областями, он естественно выглядит скорее как обмен сообщениями, а не как запрос-ответ, как показано на этой диаграмме BPMN (круги представляют сообщения):
+
+![Рабочий процесс по обработке заявок](../images/bpmn-ticket-workflow.jpg 'Рабочий процесс по обработке заявок')
+
+Обратите внимание, что мы должны гарантировать доставку сообщения в точное место назначения, поэтому это взаимодействие основано на передаче сообщений в очереди, а не на публикации-подписке на тему.
+
+## Последствия
+
+Давайте рассмотрим плюсы и минусы:
+
+- увеличение сложности;
+- очереди сообщений могут стать единой точкой отказа, поэтому их необходимо балансировать нагрузку;
+- рабочий процесс по обработке заявок становится более сложным для тестирования и отладки.
+
+Так как вышеуказанные качества притичны для бизнеса, мы принимаем эти плюсы и минусы.
