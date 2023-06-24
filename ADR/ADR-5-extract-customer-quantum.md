@@ -1,34 +1,35 @@
-## ADR-5: Extract customer architectural quantum
+# ADR-5: Извлечение архитектурного кванта клиента
 
-## Status
-Proposed
+## Статус
 
-## Context
-Improve responsiveness and availability of the customer-facing services.
+Предложенный
 
-As the business grows, the number of customers using the system grows as well, so we need to preserve performance characteristics while scaling up.
+## Контекст
 
-## Decision
-The challenging thing here is that customers interact quite closely with the other parts of the system, specifically:
+Улучшение отзывчивости и доступности сервисов, предоставляемых клиентам.
 
-* **UC-2 support contracts**: customers need to choose from available support contracts while composing their support plans;
-* **UC-2 billing info**: the system has to move credit card data into a secure place;
-* **UC-3 ticket submission**: customers submit their tickets for processing by another part of system;
-* **UC-4 survey submission**: customers will need to submit feedback surveys that are needed for analytics;
-* **UC-7 receive invoices**: when get billed customers should receive invoices.
+По мере роста бизнеса, увеличивается количество клиентов, использующих систему, поэтому нам необходимо сохранить характеристики производительности при масштабировании.
 
-New support contracts, or support contract changes, are not the kind of an event that needs a reaction, thus we can leave it for a table-based replication. This can be a built-in database feature, or, in case we want to avoid this database level coupling, it can be an ETL job that runs periodically and synchronizes support contract information between quanta.
+## Решение
 
-Since we don't store sensitive credit card information within the customer quantum (see [ADR-4](ADR/ADR-4-extract-billing-quanta.md)), we need move this information securely to the billing quantum. Doing this synchronously (via a REST API or a RPC call) will nullify our efforts on scalability and availability for the customer quantum, so we will leverage asynchronous messaging here.
+Сложность здесь заключается в том, что клиенты взаимодействуют довольно тесно с другими частями системы, в частности:
 
-The same for the ticket submission - we don't want to make our customer to wait for the ticket to be taken into processing, so this is simple fire and forget message.
+- **UC-2 контракты поддержки**: клиенты должны выбрать из доступных контрактов поддержки при составлении своих планов поддержки;
+- **UC-2 информация о платежах**: система должна перемещать данные кредитных карт в безопасное место;
+- **UC-3 подача заявки**: клиенты подают свои заявки на обработку другой частью системы;
+- **UC-4 подача опросов**: клиенты должны будут отправлять опросы с отзывами, которые необходимы для аналитики;
+- **UC-7 получение счетов**: при выставлении счетов клиенты должны получать счета.
 
-Survey submission, on the other side, is not a kind of an event that needs an immediate reaction so table-based replication might work here. However, since feedback surveys are needed only for analytics, we don't need those surveys to be stored within the customer quantum so we can push them to the corresponding quantum asynchronously as well.
+Новые контракты поддержки или изменения контрактов поддержки не являются событиями, требующими немедленной реакции, поэтому мы можем оставить это для репликации на уровне таблицы. Это может быть встроенная функция базы данных или, если мы хотим избежать связанности на уровне базы данных, это может быть фоновая задача ETL, которая запускается периодически и синхронизирует информацию о контрактах поддержки между квантами.
 
-When the Payment job generates an invoice, it does not have to wait for the invoice to be sent to the customer. Or, if the Notification system is down (for maintenance, for example), we don't want any invoices to be missed; customers should eventually get their invoices. For this reason, we will use an persistent message queue for sending invoices between billing and customer quanta.
+Поскольку мы не храним конфиденциальную информацию о кредитных картах в кванте клиента (см. [ADR-4](ADR/ADR-4-extract-billing-quanta.md)), нам нужно безопасно переместить эту информацию в биллинговый квант. Если делать это синхронно (через REST API или RPC-вызов), мы потеряем преимущества масштабируемости и доступности для кванта клиента, поэтому мы воспользуемся асинхронной передачей сообщений.
 
-All together:
+То же самое относится к подаче заявки на обработку - мы не хотим заставлять клиента ждать, пока заявка будет взята в обработку, поэтому это просто сообщение "отправить и забыть".
 
-![Customer Quantum](../images/adr-5.jpg)
+С другой стороны, подача опросов не является событием, требующим немедленной реакции, поэтому здесь может подойти репликация на уровне таблиц. Однако, поскольку опросы с отзывами необходимы только для аналитики, нам не нужно хранить эти опросы в кванте клиента, поэтому мы также можем асинхронно передавать их в соответствующий квант.
 
-## Consequences
+Когда задача по выставлению счетов генерирует счет, ей не обязательно ждать отправки счета клиенту. Или, если система уведомлений недоступна (например, из-за проведения технических работ), мы не хотим, чтобы какие-либо счета были пропущены; клиенты в конечном итоге должны получить свои счета. По этой причине мы будем использовать постоянную очередь сообщений для отправки счетов между биллинговым и клиентским квантами.
+
+Все вместе:
+
+![Квант клиента](../images/adr-5.jpg)
